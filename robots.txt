@@ -1,9 +1,0 @@
-User-agent: *
-Disallow: /admin.php
-Disallow: /installer.php
-Disallow: /cache/
-Disallow: /admin/
-Disallow: /index.php?action=api
-Disallow: /index.php?action=get_video
-
-Sitemap: https://example.com/sitemap.xml
