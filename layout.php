@@ -140,6 +140,9 @@
         }
     }
     </style>
+<?php if (isset($include_player) && $include_player): ?>
+    <script src="<?php echo getConfig('site.url'); ?>/assets/js/playerjs.js"></script>
+<?php endif; ?>
 </head>
 <body>
     <?php
