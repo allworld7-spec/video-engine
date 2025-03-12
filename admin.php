@@ -337,6 +337,95 @@ if ($action === 'api') {
                 'data' => $result
             ];
             break;
+
+        case 'delete_videos':
+    $videoIds = json_decode($_POST['video_ids'] ?? '[]', true);
+    
+    if (empty($videoIds)) {
+        $response = ['success' => false, 'error' => 'Не выбраны видео для удаления'];
+        break;
+    }
+    
+    // Удаляем видео
+    $result = $videoEngine->deleteVideos($videoIds);
+    
+    $response = [
+        'success' => true,
+        'message' => "Удалено {$result['success']} видео. Ошибок: {$result['errors']}",
+        'data' => $result
+    ];
+    break;
+
+// Добавляем метод для удаления тегов в файл admin.php
+// В секцию case 'api': добавляем новый case для обработки удаления тегов:
+
+case 'delete_tags':
+    $tagIds = json_decode($_POST['tag_ids'] ?? '[]', true);
+    
+    if (empty($tagIds)) {
+        $response = ['success' => false, 'error' => 'Не выбраны теги для удаления'];
+        break;
+    }
+    
+    $success = 0;
+    $errors = 0;
+    
+    foreach ($tagIds as $tagId) {
+        // Удаляем связи тега с видео
+        $deleteLinks = db_query(
+            "DELETE FROM " . getConfig('db.prefix') . "video_tags WHERE tag_id = ?",
+            [$tagId]
+        );
+        
+        // Удаляем сам тег
+        $deleteTag = db_delete('tags', ['id' => $tagId]);
+        
+        if ($deleteTag) {
+            $success++;
+        } else {
+            $errors++;
+        }
+    }
+    
+    $response = [
+        'success' => true,
+        'message' => "Удалено {$success} тегов. Ошибок: {$errors}",
+        'data' => [
+            'success' => $success,
+            'errors' => $errors
+        ]
+    ];
+    break;
+
+// Добавляем метод для получения списка тегов
+// В секцию case 'api': добавляем новый case для получения списка тегов:
+
+case 'get_tags':
+    $sortBy = $_GET['sort'] ?? 'name';
+    
+    if ($sortBy === 'count') {
+        $tags = db_get_rows(
+            "SELECT t.*, COUNT(vt.video_id) as video_count 
+            FROM " . getConfig('db.prefix') . "tags t
+            LEFT JOIN " . getConfig('db.prefix') . "video_tags vt ON t.id = vt.tag_id
+            GROUP BY t.id
+            ORDER BY video_count DESC"
+        );
+    } else {
+        $tags = db_get_rows(
+            "SELECT t.*, COUNT(vt.video_id) as video_count 
+            FROM " . getConfig('db.prefix') . "tags t
+            LEFT JOIN " . getConfig('db.prefix') . "video_tags vt ON t.id = vt.tag_id
+            GROUP BY t.id
+            ORDER BY t.name ASC"
+        );
+    }
+    
+    $response = [
+        'success' => true,
+        'tags' => $tags
+    ];
+    break;
         
         case 'import_tags':
             // Проверяем, что файл был загружен
