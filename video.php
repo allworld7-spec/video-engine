@@ -29,45 +29,52 @@ $page_image = $video['thumb_processed'];
     <div class="video-container">
         <div class="video-player-wrapper">
             <?php if (getConfig('player.type') === 'playerjs'): ?>
-                <div id="player" style="width:100%; height:auto;"></div>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        if (typeof Playerjs !== 'undefined') {
-                            var player = new Playerjs({
-                                id: "player",
-                                file: "<?php echo $video['secure_url']; ?>",
-                                poster: "<?php echo $video['thumb_processed']; ?>",
-                                autoplay: <?php echo getConfig('player.autoplay') ? 'true' : 'false'; ?>,
-                                preload: "<?php echo getConfig('player.preload'); ?>"
-                            });
-                        } else {
-                            console.error('Playerjs библиотека не загружена');
-                            var playerDiv = document.getElementById('player');
-                            playerDiv.innerHTML = `
-                                <video controls 
-                                       preload="<?php echo getConfig('player.preload'); ?>" 
-                                       poster="<?php echo $video['thumb_processed']; ?>" 
-                                       width="100%" 
-                                       height="auto">
-                                    <source src="<?php echo $video['secure_url']; ?>" type="video/mp4">
-                                    Ваш браузер не поддерживает HTML5 видео.
-                                </video>
-                            `;
-                        }
+               <?php if (getConfig('player.type') === 'playerjs'): ?>
+    <div id="player" style="width:100%; height:auto;"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем, загружен ли Playerjs
+            if (typeof Playerjs === 'undefined') {
+                // Если Playerjs не загружен, динамически загружаем его
+                var script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = '//cdn.playerjs.io/player.js';
+                script.onload = function() {
+                    // После загрузки инициализируем плеер
+                    var player = new Playerjs({
+                        id: "player",
+                        file: "<?php echo $video['secure_url']; ?>",
+                        poster: "<?php echo $video['thumb_processed']; ?>",
+                        autoplay: <?php echo getConfig('player.autoplay') ? 'true' : 'false'; ?>,
+                        preload: "<?php echo getConfig('player.preload'); ?>"
                     });
-                </script>
-            <?php elseif (!empty($video['embed_code'])): ?>
-                <div class="embed-container">
-                    <?php echo $video['embed_code']; ?>
-                </div>
-            <?php else: ?>
-                <video controls 
-                       preload="<?php echo getConfig('player.preload'); ?>" 
-                       poster="<?php echo $video['thumb_processed']; ?>" 
-                       width="100%">
-                    <source src="<?php echo $video['secure_url']; ?>" type="video/mp4">
-                    Ваш браузер не поддерживает HTML5 видео.
-                </video>
+                };
+                document.head.appendChild(script);
+            } else {
+                // Если Playerjs уже загружен, инициализируем плеер напрямую
+                var player = new Playerjs({
+                    id: "player",
+                    file: "<?php echo $video['secure_url']; ?>",
+                    poster: "<?php echo $video['thumb_processed']; ?>",
+                    autoplay: <?php echo getConfig('player.autoplay') ? 'true' : 'false'; ?>,
+                    preload: "<?php echo getConfig('player.preload'); ?>"
+                });
+            }
+        });
+    </script>
+<?php elseif (!empty($video['embed_code'])): ?>
+    <div class="embed-container">
+        <?php echo $video['embed_code']; ?>
+    </div>
+<?php else: ?>
+    <video controls 
+           preload="<?php echo getConfig('player.preload'); ?>" 
+           poster="<?php echo $video['thumb_processed']; ?>" 
+           width="100%">
+        <source src="<?php echo $video['secure_url']; ?>" type="video/mp4">
+        Ваш браузер не поддерживает HTML5 видео.
+    </video>
+<?php endif; ?>
             <?php endif; ?>
         </div>
         <div class="video-info">
