@@ -2314,15 +2314,11 @@ function generate_color_scheme() {
 }
 
 /**
- * Обновленная генерация уникального CSS
+ * Генерация уникального CSS
  * @param array $colors Цветовая схема
  * @return string CSS код
  */
-function generate_custom_css($colors = null) {
-    if ($colors === null) {
-        $colors = generate_color_scheme();
-    }
-    
+function generate_custom_css($colors) {
     // Выбор случайного варианта шаблона
     $templateVariant = mt_rand(1, 3);
     
@@ -2513,519 +2509,792 @@ function generate_custom_css($colors = null) {
     $css .= "  border: none;\n";
     $css .= "  border-radius: {$buttonRadius}px;\n";
     $css .= "  color: white;\n";
-    $css .= "cursor: pointer;
-  padding: {$buttonPaddingV}px {$buttonPaddingH}px;
-  transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
-  display: inline-block;
-  text-align: center;
+    $css .= "  cursor: pointer;\n";
+    $css .= "  padding: {$buttonPaddingV}px {$buttonPaddingH}px;\n";
+    $css .= "  transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;\n";
+    $css .= "  display: inline-block;\n";
+    $css .= "  text-align: center;\n";
+    $css .= "  font-weight: bold;\n";
+    $css .= "  font-size: 14px;\n";
+    $css .= "  text-decoration: none;\n";
+    $css .= "}\n\n";
+    
+    $css .= ".button:hover, button:hover, input[type='submit']:hover {\n";
+    $css .= "  background-color: var(--color-secondary);\n";
+    
+    // Добавляем эффект при наведении случайным образом
+    $hoverEffect = mt_rand(1, 3);
+    if ($hoverEffect === 1) {
+        $css .= "  transform: translateY(-2px);\n";
+    } elseif ($hoverEffect === 2) {
+        $css .= "  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);\n";
+    } elseif ($hoverEffect === 3) {
+        $css .= "  filter: brightness(110%);\n";
+    }
+    
+    $css .= "}\n\n";
+    
+    $css .= ".button:active, button:active, input[type='submit']:active {\n";
+    $css .= "  transform: translateY(1px);\n";
+    $css .= "}\n\n";
+    
+    // Стили для контейнера
+    $containerWidth = mt_rand(1100, 1300);
+    $containerPadding = mt_rand(10, 20);
+    
+    $css .= ".container {\n";
+    $css .= "  max-width: {$containerWidth}px;\n";
+    $css .= "  margin: 0 auto;\n";
+    $css .= "  padding: 0 {$containerPadding}px;\n";
+    $css .= "  width: 100%;\n";
+    $css .= "  box-sizing: border-box;\n";
+    $css .= "}\n\n";
+    
+    // Создаем разные варианты шаблонов
+    switch ($templateVariant) {
+        case 1: // Вариант 1: Стандартный макет с верхним меню
+            $headerPadding = mt_rand(15, 25);
+            
+            $css .= "header {\n";
+            $css .= "  background-color: var(--color-" . ['primary', 'secondary'][mt_rand(0, 1)] . ");\n";
+            $css .= "  color: white;\n";
+            $css .= "  padding: {$headerPadding}px 0;\n";
+            $css .= "}\n\n";
+            
+            $css .= ".header-content {\n";
+            $css .= "  display: flex;\n";
+            $css .= "  justify-content: space-between;\n";
+            $css .= "  align-items: center;\n";
+            $css .= "}\n\n";
+            
+            $css .= ".logo {\n";
+            $css .= "  margin-right: 20px;\n";
+            $css .= "}\n\n";
+            
+            $css .= ".logo img {\n";
+            $css .= "  max-height: 40px;\n";
+            $css .= "}\n\n";
+            
+            $css .= ".search-form {\n";
+            $css .= "  flex-grow: 1;\n";
+            $css .= "  max-width: 500px;\n";
+            $css .= "  display: flex;\n";
+            $css .= "}\n\n";
+            
+            $css .= ".search-input {\n";
+            $css .= "  flex-grow: 1;\n";
+            $css .= "  padding: 10px;\n";
+            $css .= "  border: none;\n";
+            $css .= "  border-radius: {$buttonRadius}px 0 0 {$buttonRadius}px;\n";
+            $css .= "}\n\n";
+            
+            $css .= ".search-button {\n";
+            $css .= "  border-radius: 0 {$buttonRadius}px {$buttonRadius}px 0;\n";
+            $css .= "  padding: 10px 20px;\n";
+            $css .= "}\n\n";
+            
+            $navPadding = mt_rand(8, 15);
+            
+            $css .= "nav {\n";
+            $css .= "  background-color: var(--color-secondary);\n";
+            $css .= "  padding: {$navPadding}px 0;\n";
+            $css .= "}\n\n";
+            
+            $css .= "nav ul {\n";
+            $css .= "  display: flex;\n";
+            $css .= "  flex-wrap: wrap;\n";
+            $css .= "  list-style: none;\n";
+            $css .= "  padding: 0;\n";
+            $css .= "  margin: 0;\n";
+            $css .= "}\n\n";
+            
+            $navItemMargin = mt_rand(10, 20);
+            
+            $css .= "nav li {\n";
+            $css .= "  margin-right: {$navItemMargin}px;\n";
+            $css .= "  margin-bottom: 5px;\n";
+            $css .= "}\n\n";
+            
+            $css .= "nav a {\n";
+            $css .= "  color: white;\n";
+            $css .= "  text-decoration: none;\n";
+            
+            // Случайно добавляем разные стили для пунктов меню
+            $navItemStyle = mt_rand(1, 3);
+            if ($navItemStyle === 1) {
+                $css .= "  font-weight: bold;\n";
+            } elseif ($navItemStyle === 2) {
+                $css .= "  text-transform: uppercase;\n";
+                $css .= "  font-size: 12px;\n";
+                $css .= "  letter-spacing: 1px;\n";
+            } elseif ($navItemStyle === 3) {
+                $css .= "  padding: 5px 10px;\n";
+                $css .= "  border-radius: 3px;\n";
+                $css .= "  transition: background-color 0.3s;\n";
+            }
+            
+            $css .= "}\n\n";
+            
+            if ($navItemStyle === 3) {
+                $css .= "nav a:hover {\n";
+                $css .= "  background-color: rgba(255, 255, 255, 0.1);\n";
+                $css .= "  color: white;\n";
+                $css .= "}\n\n";
+            } else {
+                $css .= "nav a:hover {\n";
+                $css .= "  color: rgba(255, 255, 255, 0.8);\n";
+                $css .= "}\n\n";
+            }
+            
+            $contentPadding = mt_rand(20, 40);
+            
+            $css .= ".main-content {\n";
+            $css .= "  padding: {$contentPadding}px 0;\n";
+            $css .= "}\n\n";
+            
+            $footerPadding = mt_rand(25, 40);
+            $footerMargin = mt_rand(30, 50);
+            
+            $css .= "footer {\n";
+            $css .= "  background-color: var(--color-" . ['primary', 'secondary', 'text'][mt_rand(0, 2)] . ");\n";
+            $css .= "  color: white;\n";
+            $css .= "  padding: {$footerPadding}px 0;\n";
+            $css .= "  margin-top: {$footerMargin}px;\n";
+            $css .= "}\n\n";
+            
+            break;
+            
+        case 2:
+            // Вариант 2: Макет с боковым меню
+            $css .= "body {\n";
+            $css .= "  display: flex;\n";
+            $css .= "  flex-direction: column;\n";
+            $css .= "  min-height: 100vh;\n";
+            $css .= "}\n\n";
+            
+            $headerPadding = mt_rand(15, 25);
+            
+            $css .= "header {\n";
+            $css .= "  background-color: var(--color-primary);\n";
+            $css .= "  color: white;\n";
+            $css .= "  padding: {$headerPadding}px 0;\n";
+            $css .= "}\n\n";
+            
+            $css .= ".header-content {\n";
+            $css .= "  display: flex;\n";
+            $css .= "  justify-content: space-between;\n";
+            $css .= "  align-items: center;\n";
+            $css .= "}\n\n";
+            
+            $css .= ".main-wrapper {\n";
+            $css .= "  display: flex;\n";
+            $css .= "  flex: 1;\n";
+            $css .= "}\n\n";
+            
+            $sidebarWidth = mt_rand(220, 280);
+            $sidebarPadding = mt_rand(15, 25);
+            
+            $css .= ".sidebar {\n";
+            $css .= "  width: {$sidebarWidth}px;\n";
+            $css .= "  background-color: var(--color-background);\n";
+            $css .= "  padding: {$sidebarPadding}px;\n";
+            $css .= "  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n";
+            $css .= "}\n\n";
+            
+            $css .= "nav ul {\n";
+            $css .= "  list-style: none;\n";
+            $css .= "  padding: 0;\n";
+            $css .= "  margin: 0;\n";
+            $css .= "}\n\n";
+            
+            $navItemMargin = mt_rand(8, 15);
+            
+            $css .= "nav li {\n";
+            $css .= "  margin-bottom: {$navItemMargin}px;\n";
+            $css .= "}\n\n";
+            
+            $navPadding = mt_rand(8, 12);
+            $navRadius = mt_rand(3, 6);
+            
+            $css .= "nav a {\n";
+            $css .= "  display: block;\n";
+            $css .= "  padding: {$navPadding}px;\n";
+            $css .= "  color: var(--color-text);\n";
+            $css .= "  text-decoration: none;\n";
+            $css .= "  border-radius: {$navRadius}px;\n";
+            $css .= "  transition: background-color 0.3s, color 0.3s;\n";
+            $css .= "}\n\n";
+            
+            $css .= "nav a:hover {\n";
+            $css .= "  background-color: var(--color-primary);\n";
+            $css .= "  color: white;\n";
+            $css .= "}\n\n";
+            
+            $contentPadding = mt_rand(20, 30);
+            
+            $css .= ".main-content {\n";
+            $css .= "  flex: 1;\n";
+            $css .= "  padding: {$contentPadding}px;\n";
+            $css .= "}\n\n";
+            
+            $footerPadding = mt_rand(20, 30);
+            
+            $css .= "footer {\n";
+            $css .= "  background-color: var(--color-primary);\n";
+            $css .= "  color: white;\n";
+            $css .= "  padding: {$footerPadding}px 0;\n";
+            $css .= "}\n\n";
+            
+            break;
+            
+        case 3:
+            // Вариант 3: Современный макет с фиксированным верхним меню
+            $headerHeight = mt_rand(50, 70);
+            
+            $css .= "body {\n";
+            $css .= "  padding-top: {$headerHeight}px; /* Для фиксированного хедера */\n";
+            $css .= "}\n\n";
+            
+            $css .= "header {\n";
+            $css .= "  background-color: var(--color-primary);\n";
+            $css .= "  color: white;\n";
+            $css .= "  position: fixed;\n";
+            $css .= "  top: 0;\n";
+            $css .= "  left: 0;\n";
+            $css .= "  right: 0;\n";
+            $css .= "  z-index: 1000;\n";
+            $css .= "  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\n";
+            $css .= "}\n\n";
+            
+            $css .= ".header-content {\n";
+            $css .= "  display: flex;\n";
+            $css .= "  justify-content: space-between;\n";
+            $css .= "  align-items: center;\n";
+            $css .= "  height: {$headerHeight}px;\n";
+            $css .= "}\n\n";
+            
+            $css .= ".logo {\n";
+            $css .= "  display: flex;\n";
+            $css .= "  align-items: center;\n";
+            $css .= "}\n\n";
+            
+            $css .= ".logo img {\n";
+            $css .= "  max-height: " . ($headerHeight - 20) . "px;\n";
+            $css .= "}\n\n";
+            
+            $css .= "nav {\n";
+            $css .= "  display: flex;\n";
+            $css .= "  align-items: center;\n";
+            $css .= "}\n\n";
+            
+            $css .= "nav ul {\n";
+            $css .= "  display: flex;\n";
+            $css .= "  list-style: none;\n";
+            $css .= "  padding: 0;\n";
+            $css .= "  margin: 0;\n";
+            $css .= "}\n\n";
+            
+            $navItemMargin = mt_rand(15, 25);
+            
+            $css .= "nav li {\n";
+            $css .= "  margin-left: {$navItemMargin}px;\n";
+            $css .= "}\n\n";
+            
+            $css .= "nav a {\n";
+            $css .= "  color: white;\n";
+            $css .= "  text-decoration: none;\n";
+            $css .= "  font-weight: bold;\n";
+            $css .= "  text-transform: uppercase;\n";
+            $css .= "  font-size: 14px;\n";
+            $css .= "  letter-spacing: 1px;\n";
+            $css .= "  position: relative;\n";
+            $css .= "  padding: 5px 0;\n";
+            $css .= "}\n\n";
+            
+            // Добавляем эффектную анимацию для пунктов меню
+            $css .= "nav a:after {\n";
+            $css .= "  content: '';\n";
+            $css .= "  position: absolute;\n";
+            $css .= "  bottom: 0;\n";
+            $css .= "  left: 0;\n";
+            $css .= "  width: 0;\n";
+            $css .= "  height: 2px;\n";
+            $css .= "  background-color: var(--color-accent);\n";
+            $css .= "  transition: width 0.3s;\n";
+            $css .= "}\n\n";
+            
+            $css .= "nav a:hover:after {\n";
+            $css .= "  width: 100%;\n";
+            $css .= "}\n\n";
+            
+            $css .= "nav a:hover {\n";
+            $css .= "  color: var(--color-accent);\n";
+            $css .= "}\n\n";
+            
+            $css .= ".search-form {\n";
+            $css .= "  display: flex;\n";
+            $css .= "  margin-left: 20px;\n";
+            $css .= "}\n\n";
+            
+            $contentPadding = mt_rand(30, 50);
+            
+            $css .= ".main-content {\n";
+            $css .= "  padding: {$contentPadding}px 0;\n";
+            $css .= "}\n\n";
+            
+            $footerPadding = mt_rand(40, 60);
+            $footerMargin = mt_rand(40, 60);
+            
+            $css .= "footer {\n";
+            $css .= "  background-color: var(--color-secondary);\n";
+            $css .= "  color: white;\n";
+            $css .= "  padding: {$footerPadding}px 0 20px;\n";
+            $css .= "  margin-top: {$footerMargin}px;\n";
+            $css .= "}\n\n";
+            
+            break;
+    }
+    
+    // Стили для видеогалереи
+    $gridGap = mt_rand(15, 25);
+    
+    $css .= ".video-grid {\n";
+    $css .= "  display: grid;\n";
+    $css .= "  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));\n";
+    $css .= "  gap: {$gridGap}px;\n";
+    $css .= "  margin: 20px 0;\n";
+    $css .= "}\n\n";
+    
+    $itemRadius = mt_rand(3, 8);
+    $shadowSize = mt_rand(5, 15);
+    
+    $css .= ".video-item {\n";
+    $css .= "  border-radius: {$itemRadius}px;\n";
+    $css .= "  overflow: hidden;\n";
+    $css .= "  box-shadow: 0 " . mt_rand(2, 5) . "px {$shadowSize}px rgba(0, 0, 0, 0.1);\n";
+    $css .= "  transition: transform 0.3s, box-shadow 0.3s;\n";
+    $css .= "  background-color: #222;\n";
+    $css .= "  height: 100%;\n"; // Фиксированная высота для выравнивания
+    $css .= "  display: flex;\n";
+    $css .= "  flex-direction: column;\n";
+    $css .= "}\n\n";
+    
+    $hoverTransform = mt_rand(3, 5); // Уменьшено для более тонкого эффекта
+    $hoverShadow = mt_rand(15, 25);
+    
+    $css .= ".video-item:hover {\transform: translateY(-{$hoverTransform}px);
+  box-shadow: 0 " . mt_rand(8, 15) . "px {$hoverShadow}px rgba(0, 0, 0, 0.15);
+}
+
+.video-thumbnail {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 соотношение */
+  background-color: #000;
+  overflow: hidden;
+}
+
+.video-thumbnail img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+/* Добавляем эффект при наведении на превью */
+.video-item:hover .video-thumbnail img {
+  transform: scale(1.05);
+}
+
+.video-duration {
+  position: absolute;
+  bottom: " . mt_rand(5, 10) . "px;
+  right: " . mt_rand(5, 10) . "px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 12px;
   font-weight: bold;
+  z-index: 2;
+}
+
+.video-info {
+  padding: 10px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.video-title {
   font-size: 14px;
+  margin: 0 0 8px 0;
+  color: #fff;
+  overflow: visible; /* Изменено для показа полного названия */
+  white-space: normal;
+  line-height: 1.4;
+  flex-grow: 1;
+  word-wrap: break-word;
+}
+
+.video-stats {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: auto; /* Прижать к низу */
+}
+
+.video-date {
+  display: inline-block;
+}
+
+/* Стили для страницы видео */
+.video-page {
+  margin-bottom: 40px;
+}
+
+.video-container {
+  margin-bottom: 20px;
+  background-color: #111;
+  border-radius: {$itemRadius}px;
+  overflow: hidden;
+}
+
+.video-player-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 соотношение */
+  height: 0;
+  overflow: hidden;
+}
+
+.video-player-wrapper iframe,
+.video-player-wrapper video,
+.video-player-wrapper #player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.video-page h1 {
+  font-size: " . mt_rand(20, 24) . "px;
+  margin: 15px 0;
+  color: var(--color-primary);
+}
+
+.video-meta {
+  background-color: #222;
+  padding: 15px;
+  border-radius: {$itemRadius}px;
+  margin-bottom: 20px;
+}
+
+.video-categories {
+  margin: 10px 0;
+}
+
+.video-category {
+  display: inline-block;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  padding: 5px 8px;
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: 3px;
+  font-size: 12px;
   text-decoration: none;
 }
 
-.button:hover, button:hover, input[type='submit']:hover {
+.video-category:hover {
   background-color: var(--color-secondary);
-  
-  // Добавляем эффект при наведении случайным образом
-  $hoverEffect = mt_rand(1, 3);
-  if ($hoverEffect === 1) {
-    $css .= "  transform: translateY(-2px);\n";
-  } elseif ($hoverEffect === 2) {
-    $css .= "  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);\n";
-  } elseif ($hoverEffect === 3) {
-    $css .= "  filter: brightness(110%);\n";
+  color: #fff;
+  text-decoration: none;
+}
+
+.video-description {
+  line-height: 1.6;
+  margin: 15px 0;
+  color: #ddd;
+}
+
+.video-tags {
+  margin: 15px 0;
+}
+
+.tags-label {
+  color: #aaa;
+  margin-right: 5px;
+}
+
+.video-tag {
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  padding: 3px 8px;
+  background-color: #333;
+  color: #ddd;
+  border-radius: 3px;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.video-tag:hover {
+  background-color: var(--color-accent);
+  color: #fff;
+  text-decoration: none;
+}
+
+.related-videos h2 {
+  margin: 30px 0 15px;
+  color: var(--color-primary);
+}
+
+/* Пагинация */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.page-link {
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 0 3px 6px;
+  border-radius: 3px;
+  background-color: #333;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.page-link:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+  text-decoration: none;
+}
+
+.page-link.active {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.page-dots {
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 0 3px;
+  color: #aaa;
+}
+
+/* Футер */
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.8);
+  margin-right: 15px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.copyright {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Страница тэгов */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.tag-item {
+  padding: 8px 12px;
+  background-color: var(--color-secondary);
+  color: #fff;
+  border-radius: 3px;
+  font-size: 14px;
+  text-decoration: none;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.tag-item:hover {
+  background-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.tag-item-count {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 0 6px;
+  margin-left: 6px;
+  font-size: 12px;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .video-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
   }
   
-  $css .= "}\n\n";
-  
-  $css .= ".button:active, button:active, input[type='submit']:active {\n";
-  $css .= "  transform: translateY(1px);\n";
-  $css .= "}\n\n";
-  
-  // Стили для контейнера
-  $containerWidth = mt_rand(1100, 1300);
-  $containerPadding = mt_rand(10, 20);
-  
-  $css .= ".container {\n";
-  $css .= "  max-width: {$containerWidth}px;\n";
-  $css .= "  margin: 0 auto;\n";
-  $css .= "  padding: 0 {$containerPadding}px;\n";
-  $css .= "  width: 100%;\n";
-  $css .= "  box-sizing: border-box;\n";
-  $css .= "}\n\n";
-  // Создаем разные варианты шаблонов
-  switch ($templateVariant) {
-    case 1: // Вариант 1: Стандартный макет с верхним меню
-      $headerPadding = mt_rand(15, 25);
-      
-      $css .= "header {\n";
-      $css .= "  background-color: var(--color-" . ['primary', 'secondary'][mt_rand(0, 1)] . ");\n";
-      $css .= "  color: white;\n";
-      $css .= "  padding: {$headerPadding}px 0;\n";
-      $css .= "}\n\n";
-      
-      $css .= ".header-content {\n";
-      $css .= "  display: flex;\n";
-      $css .= "  justify-content: space-between;\n";
-      $css .= "  align-items: center;\n";
-      $css .= "}\n\n";
-      
-      $css .= ".logo {\n";
-      $css .= "  margin-right: 20px;\n";
-      $css .= "}\n\n";
-      
-      $css .= ".logo img {\n";
-      $css .= "  max-height: 40px;\n";
-      $css .= "}\n\n";
-      
-      $css .= ".search-form {\n";
-      $css .= "  flex-grow: 1;\n";
-      $css .= "  max-width: 500px;\n";
-      $css .= "  display: flex;\n";
-      $css .= "}\n\n";
-      
-      $css .= ".search-input {\n";
-      $css .= "  flex-grow: 1;\n";
-      $css .= "  padding: 10px;\n";
-      $css .= "  border: none;\n";
-      $css .= "  border-radius: {$buttonRadius}px 0 0 {$buttonRadius}px;\n";
-      $css .= "}\n\n";
-      
-      $css .= ".search-button {\n";
-      $css .= "  border-radius: 0 {$buttonRadius}px {$buttonRadius}px 0;\n";
-      $css .= "  padding: 10px 20px;\n";
-      $css .= "}\n\n";
-      
-      $navPadding = mt_rand(8, 15);
-      
-      $css .= "nav {\n";
-      $css .= "  background-color: var(--color-secondary);\n";
-      $css .= "  padding: {$navPadding}px 0;\n";
-      $css .= "}\n\n";
-      
-      $css .= "nav ul {\n";
-      $css .= "  display: flex;\n";
-      $css .= "  flex-wrap: wrap;\n";
-      $css .= "  list-style: none;\n";
-      $css .= "  padding: 0;\n";
-      $css .= "  margin: 0;\n";
-      $css .= "}\n\n";
-      
-      $navItemMargin = mt_rand(10, 20);
-      
-      $css .= "nav li {\n";
-      $css .= "  margin-right: {$navItemMargin}px;\n";
-      $css .= "  margin-bottom: 5px;\n";
-      $css .= "}\n\n";
-      
-      $css .= "nav a {\n";
-      $css .= "  color: white;\n";
-      $css .= "  text-decoration: none;\n";
-      
-      // Случайно добавляем разные стили для пунктов меню
-      $navItemStyle = mt_rand(1, 3);
-      if ($navItemStyle === 1) {
-        $css .= "  font-weight: bold;\n";
-      } elseif ($navItemStyle === 2) {
-        $css .= "  text-transform: uppercase;\n";
-        $css .= "  font-size: 12px;\n";
-        $css .= "  letter-spacing: 1px;\n";
-      } elseif ($navItemStyle === 3) {
-        $css .= "  padding: 5px 10px;\n";
-        $css .= "  border-radius: 3px;\n";
-        $css .= "  transition: background-color 0.3s;\n";
-      }
-      
-      $css .= "}\n\n";
-      
-      if ($navItemStyle === 3) {
-        $css .= "nav a:hover {\n";
-        $css .= "  background-color: rgba(255, 255, 255, 0.1);\n";
-        $css .= "  color: white;\n";
-        $css .= "}\n\n";
-      } else {
-        $css .= "nav a:hover {\n";
-        $css .= "  color: rgba(255, 255, 255, 0.8);\n";
-        $css .= "}\n\n";
-      }
-      
-      $contentPadding = mt_rand(20, 40);
-      
-      $css .= ".main-content {\n";
-      $css .= "  padding: {$contentPadding}px 0;\n";
-      $css .= "}\n\n";
-      
-      $footerPadding = mt_rand(25, 40);
-      $footerMargin = mt_rand(30, 50);
-      
-      $css .= "footer {\n";
-      $css .= "  background-color: var(--color-" . ['primary', 'secondary', 'text'][mt_rand(0, 2)] . ");\n";
-      $css .= "  color: white;\n";
-      $css .= "  padding: {$footerPadding}px 0;\n";
-      $css .= "  margin-top: {$footerMargin}px;\n";
-      $css .= "}\n\n";
-      
-      break;
-case 2:
-      // Вариант 2: Макет с боковым меню
-      $css .= "body {\n";
-      $css .= "  display: flex;\n";
-      $css .= "  flex-direction: column;\n";
-      $css .= "  min-height: 100vh;\n";
-      $css .= "}\n\n";
-      
-      $headerPadding = mt_rand(15, 25);
-      
-      $css .= "header {\n";
-      $css .= "  background-color: var(--color-primary);\n";
-      $css .= "  color: white;\n";
-      $css .= "  padding: {$headerPadding}px 0;\n";
-      $css .= "}\n\n";
-      
-      $css .= ".header-content {\n";
-      $css .= "  display: flex;\n";
-      $css .= "  justify-content: space-between;\n";
-      $css .= "  align-items: center;\n";
-      $css .= "}\n\n";
-      
-      $css .= ".main-wrapper {\n";
-      $css .= "  display: flex;\n";
-      $css .= "  flex: 1;\n";
-      $css .= "}\n\n";
-      
-      $sidebarWidth = mt_rand(220, 280);
-      $sidebarPadding = mt_rand(15, 25);
-      
-      $css .= ".sidebar {\n";
-      $css .= "  width: {$sidebarWidth}px;\n";
-      $css .= "  background-color: var(--color-background);\n";
-      $css .= "  padding: {$sidebarPadding}px;\n";
-      $css .= "  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n";
-      $css .= "}\n\n";
-      
-      $css .= "nav ul {\n";
-      $css .= "  list-style: none;\n";
-      $css .= "  padding: 0;\n";
-      $css .= "  margin: 0;\n";
-      $css .= "}\n\n";
-      
-      $navItemMargin = mt_rand(8, 15);
-      
-      $css .= "nav li {\n";
-      $css .= "  margin-bottom: {$navItemMargin}px;\n";
-      $css .= "}\n\n";
-      
-      $navPadding = mt_rand(8, 12);
-      $navRadius = mt_rand(3, 6);
-      
-      $css .= "nav a {\n";
-      $css .= "  display: block;\n";
-      $css .= "  padding: {$navPadding}px;\n";
-      $css .= "  color: var(--color-text);\n";
-      $css .= "  text-decoration: none;\n";
-      $css .= "  border-radius: {$navRadius}px;\n";
-      $css .= "  transition: background-color 0.3s, color 0.3s;\n";
-      $css .= "}\n\n";
-      
-      $css .= "nav a:hover {\n";
-      $css .= "  background-color: var(--color-primary);\n";
-      $css .= "  color: white;\n";
-      $css .= "}\n\n";
-      
-      $contentPadding = mt_rand(20, 30);
-      
-      $css .= ".main-content {\n";
-      $css .= "  flex: 1;\n";
-      $css .= "  padding: {$contentPadding}px;\n";
-      $css .= "}\n\n";
-      
-      $footerPadding = mt_rand(20, 30);
-      
-      $css .= "footer {\n";
-      $css .= "  background-color: var(--color-primary);\n";
-      $css .= "  color: white;\n";
-      $css .= "  padding: {$footerPadding}px 0;\n";
-      $css .= "}\n\n";
-      
-      break;
-      
-    case 3:
-      // Вариант 3: Современный макет с фиксированным верхним меню
-      $headerHeight = mt_rand(50, 70);
-      
-      $css .= "body {\n";
-      $css .= "  padding-top: {$headerHeight}px; /* Для фиксированного хедера */\n";
-      $css .= "}\n\n";
-      
-      $css .= "header {\n";
-      $css .= "  background-color: var(--color-primary);\n";
-      $css .= "  color: white;\n";
-      $css .= "  position: fixed;\n";
-      $css .= "  top: 0;\n";
-      $css .= "  left: 0;\n";
-      $css .= "  right: 0;\n";
-      $css .= "  z-index: 1000;\n";
-      $css .= "  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\n";
-      $css .= "}\n\n";
-      
-      $css .= ".header-content {\n";
-      $css .= "  display: flex;\n";
-      $css .= "  justify-content: space-between;\n";
-      $css .= "  align-items: center;\n";
-      $css .= "  height: {$headerHeight}px;\n";
-      $css .= "}\n\n";
-      
-      $css .= ".logo {\n";
-      $css .= "  display: flex;\n";
-      $css .= "  align-items: center;\n";
-      $css .= "}\n\n";
-      
-      $css .= ".logo img {\n";
-      $css .= "  max-height: " . ($headerHeight - 20) . "px;\n";
-      $css .= "}\n\n";
-      
-      $css .= "nav {\n";
-      $css .= "  display: flex;\n";
-      $css .= "  align-items: center;\n";
-      $css .= "}\n\n";
-      
-      $css .= "nav ul {\n";
-      $css .= "  display: flex;\n";
-      $css .= "  list-style: none;\n";
-      $css .= "  padding: 0;\n";
-      $css .= "  margin: 0;\n";
-      $css .= "}\n\n";
-      
-      $navItemMargin = mt_rand(15, 25);
-      
-      $css .= "nav li {\n";
-      $css .= "  margin-left: {$navItemMargin}px;\n";
-      $css .= "}\n\n";
-      
-      $css .= "nav a {\n";
-      $css .= "  color: white;\n";
-      $css .= "  text-decoration: none;\n";
-      $css .= "  font-weight: bold;\n";
-      $css .= "  text-transform: uppercase;\n";
-      $css .= "  font-size: 14px;\n";
-      $css .= "  letter-spacing: 1px;\n";
-      $css .= "  position: relative;\n";
-      $css .= "  padding: 5px 0;\n";
-      $css .= "}\n\n";
-      
-      // Добавляем эффектную анимацию для пунктов меню
-      $css .= "nav a:after {\n";
-      $css .= "  content: '';\n";
-      $css .= "  position: absolute;\n";
-      $css .= "  bottom: 0;\n";
-      $css .= "  left: 0;\n";
-      $css .= "  width: 0;\n";
-      $css .= "  height: 2px;\n";
-      $css .= "  background-color: var(--color-accent);\n";
-      $css .= "  transition: width 0.3s;\n";
-      $css .= "}\n\n";
-      
-      $css .= "nav a:hover:after {\n";
-      $css .= "  width: 100%;\n";
-      $css .= "}\n\n";
-      
-      $css .= "nav a:hover {\n";
-      $css .= "  color: var(--color-accent);\n";
-      $css .= "}\n\n";
-      
-      $css .= ".search-form {\n";
-      $css .= "  display: flex;\n";
-      $css .= "  margin-left: 20px;\n";
-      $css .= "}\n\n";
-      
-      $contentPadding = mt_rand(30, 50);
-      
-      $css .= ".main-content {\n";
-      $css .= "  padding: {$contentPadding}px 0;\n";
-      $css .= "}\n\n";
-      
-      $footerPadding = mt_rand(40, 60);
-      $footerMargin = mt_rand(40, 60);
-      
-      $css .= "footer {\n";
-      $css .= "  background-color: var(--color-secondary);\n";
-      $css .= "  color: white;\n";
-      $css .= "  padding: {$footerPadding}px 0 20px;\n";
-      $css .= "  margin-top: {$footerMargin}px;\n";
-      $css .= "}\n\n";
-      
-      break;
-  }
-// Стили для видеогалереи
-  $gridGap = mt_rand(15, 25);
-  
-  $css .= ".video-grid {\n";
-  $css .= "  display: grid;\n";
-  $css .= "  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));\n";
-  $css .= "  gap: {$gridGap}px;\n";
-  $css .= "  margin: 20px 0;\n";
-  $css .= "}\n\n";
-  
-  $itemRadius = mt_rand(3, 8);
-  $shadowSize = mt_rand(5, 15);
-  
-  $css .= ".video-item {\n";
-  $css .= "  border-radius: {$itemRadius}px;\n";
-  $css .= "  overflow: hidden;\n";
-  $css .= "  box-shadow: 0 " . mt_rand(2, 5) . "px {$shadowSize}px rgba(0, 0, 0, 0.1);\n";
-  $css .= "  transition: transform 0.3s, box-shadow 0.3s;\n";
-  $css .= "  background-color: white;\n";
-  $css .= "}\n\n";
-  
-  $hoverTransform = mt_rand(3, 8);
-  $hoverShadow = mt_rand(15, 25);
-  
-  $css .= ".video-item:hover {\n";
-  $css .= "  transform: translateY(-{$hoverTransform}px);\n";
-  $css .= "  box-shadow: 0 " . mt_rand(8, 15) . "px {$hoverShadow}px rgba(0, 0, 0, 0.15);\n";
-  $css .= "}\n\n";
-  
-  $css .= ".video-thumbnail {\n";
-  $css .= "  position: relative;\n";
-  $css .= "  padding-bottom: 56.25%;\n"; // 16:9 соотношение
-  $css .= "  background-color: #000;\n";
-  $css .= "}\n\n";
-  
-  $css .= ".video-thumbnail img {\n";
-  $css .= "  position: absolute;\n";
-  $css .= "  top: 0;\n";
-  $css .= "  left: 0;\n";
-  $css .= "  width: 100%;\n";
-  $css .= "  height: 100%;\n";
-  $css .= "  object-fit: cover;\n";
-  $css .= "  transition: transform 0.3s;\n";
-  $css .= "}\n\n";
-  
-  // Добавляем эффект при наведении на превью
-  $thumbEffect = mt_rand(1, 3);
-  
-  if ($thumbEffect === 1) {
-    $css .= ".video-item:hover .video-thumbnail img {\n";
-    $css .= "  transform: scale(1.05);\n";
-    $css .= "}\n\n";
-  } elseif ($thumbEffect === 2) {
-    $css .= ".video-thumbnail:after {\n";
-    $css .= "  content: '';\n";
-    $css .= "  position: absolute;\n";
-    $css .= "  top: 0;\n";
-    $css .= "  left: 0;\n";
-    $css .= "  right: 0;\n";
-    $css .= "  bottom: 0;\n";
-    $css .= "  background: rgba(0, 0, 0, 0.2);\n";
-    $css .= "  opacity: 0;\n";
-    $css .= "  transition: opacity 0.3s;\n";
-    $css .= "}\n\n";
-    
-    $css .= ".video-item:hover .video-thumbnail:after {\n";
-    $css .= "  opacity: 1;\n";
-    $css .= "}\n\n";
-  } elseif ($thumbEffect === 3) {
-    $accentColor = mt_rand(0, 1) ? 'primary' : 'accent';
-    $css .= ".video-thumbnail:after {\n";
-    $css .= "  content: '\\f144'; /* Play icon - requires FontAwesome */\n";
-    $css .= "  font-family: 'FontAwesome';\n";
-    $css .= "  position: absolute;\n";
-    $css .= "  top: 50%;\n";
-    $css .= "  left: 50%;\n";
-    $css .= "  transform: translate(-50%, -50%) scale(0.8);\n";
-    $css .= "  color: var(--color-{$accentColor});\n";
-    $css .= "  font-size: 40px;\n";
-    $css .= "  opacity: 0;\n";
-    $css .= "  transition: transform 0.3s, opacity 0.3s;\n";
-    $css .= "}\n\n";
-    
-    $css .= ".video-item:hover .video-thumbnail:after {\n";
-    $css .= "  opacity: 0.8;\n";
-    $css .= "  transform: translate(-50%, -50%) scale(1);\n";
-    $css .= "}\n\n";
+  .video-title {
+    font-size: 13px;
   }
   
-  $durationPadding = mt_rand(3, 6);
-  $durationRadius = mt_rand(2, 4);
+  header .container {
+    flex-direction: column;
+  }
   
-  $css .= ".video-duration {\n";
-  $css .= "  position: absolute;\n";
-  $css .= "  bottom: " . mt_rand(5, 10) . "px;\n";
-  $css .= "  right: " . mt_rand(5, 10) . "px;\n";
-  $css .= "  background-color: rgba(0, 0, 0, 0.7);\n";
-  $css .= "  color: white;\n";
-  $css .= "  padding: {$durationPadding}px " . ($durationPadding * 2) . "px;\n";
-  $css .= "  border-radius: {$durationRadius}px;\n";
-  $css .= "  font-size: " . mt_rand(10, 14) . "px;\n";
-  $css .= "  font-weight: bold;\n";
-  $css .= "  z-index: 2;\n";
-  $css .= "}\n\n";
+  .search-form {
+    margin-top: 15px;
+    max-width: 100%;
+  }
   
-  $infoPadding = mt_rand(10, 15);
+  nav ul {
+    justify-content: center;
+  }
   
-  $css .= ".video-info {\n";
-  $css .= "  padding: {$infoPadding}px;\n";
-  $css .= "  background-color: white;\n";
-  $css .= "}\n\n";
+  nav li {
+    margin: 5px;
+  }
   
-  $titleSize = mt_rand(14, 18);
-  $titleMargin = mt_rand(5, 10);
-  
-  $css .= ".video-title {\n";
-  $css .= "  font-size: {$titleSize}px;\n";
-  $css .= "  font-weight: " . ['bold', 'normal'][mt_rand(0, 1)] . ";\n";
-  $css .= "  margin: 0 0 {$titleMargin}px 0;\n";
-  $css .= "  text-overflow: ellipsis;\n";
-  $css .= "  white-space: normal;\n"; // Изменено для вывода полного названия
-  $css .= "  display: -webkit-box;\n";
-  $css .= "  -webkit-line-clamp: 2;\n"; // Ограничение в 2 строки
-  $css .= "  -webkit-box-orient: vertical;\n";
-  $css .= "  overflow: hidden;\n";
-  $css .= "  line-height: 1.4;\n";
-  $css .= "  max-height: 2.8em;\n"; // Максимальная высота в 2 строки
-  $css .= "}\n\n";
-  
-  $css .= ".video-stats {\n";
-  $css .= "  display: flex;\n";
-  $css .= "  justify-content: space-between;\n";
-  $css .= "  font-size: " . mt_rand(11, 14) . "px;\n";
-  $css .= "  color: #888;\n";
-  $css .= "}\n\n";
-// Стили для страницы видео
-  $css .= ".video-container {\n";
-  $css .= "  margin: " . mt_rand(20, 30) . "px 0;\n";
-  $css .= "  background-color: " . (mt_rand(0, 1) ? '#222' : '#000') . ";\n";
-  $css .= "  border-radius: {$itemRadius}px;\n";
-  $css .= "  overflow: hidden;\n";
-  $css .= "}\n\n";
-  
-  $css .= ".video-player {\n";
-  $css .= "  position: relative;\n";
-  $css .= "  padding-bottom: 56.25%;\n"; // 16:9 соотношение
-  $css .= "  height: 0;\n";
-  $css .= "  overflow: hidden;\n";
-  $css .= "  max-width: 100%;\n";
-  $css .= "}\n\n";
-  
-  $css .= ".video-player iframe {\n";
-  $css .= "  position: absolute;\n";
-  $css .= "  top: 0;\n";
-  $css .= "  left: 0;\n";
-  $css .= "  width: 100%;\n";
-  $css .= "  height: 100%;\n";
-  $css .= "}\n\n";
-  
-  $css .= ".video-meta {\n";
-  $css .= "  margin: " . mt_rand(15, 25) . "px 0;\n";
-  $css .= "}\n\n";
-  
-  $titleSize = mt_rand(22, 28);
-  $titleMargin = mt_rand(10, 20);
-  
-  $css .= ".video-meta h1 {\n";
-  $css .= "  font-size: {$titleSize}px;\n";
-  $css .= "  margin-bottom: {$titleMargin}px;\n";
-  $css .= "}\n\n";
+  .footer-links a {
+    margin-right: 10px;
+    margin-bottom: 8px;
+  }
+}
+
+/* Описание сайта на главной странице */
+.site-description {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 40px;
+  border-radius: {$itemRadius}px;
+  border-left: 4px solid var(--color-primary);
+}
+
+.site-description h2 {
+  margin-top: 0;
+  color: var(--color-primary);
+}
+
+.description-content {
+  line-height: 1.6;
+}
+
+/* Категория - описание под h1 */
+.category-description {
+  margin-bottom: 30px;
+  line-height: 1.6;
+  color: #ddd;
+}
+
+/* Стили для режима обслуживания */
+.maintenance-mode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.maintenance-mode h1 {
+  color: #fff;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.maintenance-mode p {
+  color: #ddd;
+  font-size: 16px;
+}
+
+/* Улучшения для красивых форм */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.no-videos, .no-results {
+  padding: 40px 20px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: {$itemRadius}px;
+  margin: 20px 0;
+}
+
+.no-videos p, .no-results p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.search-suggestions {
+  margin-top: 30px;
+  text-align: left;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-suggestions h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.search-suggestions ul {
+  padding-left: 20px;
+}
+
+.search-suggestions li {
+  margin-bottom: 8px;
+}
+
+/* Анимация для улучшения UX */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.video-item, .pagination, .site-description {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Улучшения для ссылок в описаниях */
+.video-description a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.video-description a:hover {
+  color: var(--color-primary);
+}
+
+return $css;
+}
+
 
 /**
  * Генерация логотипа с поддержкой кириллицы
