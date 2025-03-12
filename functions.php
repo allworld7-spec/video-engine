@@ -3086,114 +3086,7 @@ case 2:
 }
 
 /**
- * Генерация фавиконки
- * @param string $siteName Название сайта
- * @return string Путь к фавиконке
- */
-function generate_favicon($siteName) {
-    $faviconDir = getConfig('paths.root') . '/favicon';
-    
-    if (!is_dir($faviconDir)) {
-        mkdir($faviconDir, 0755, true);
-    }
-    
-    // Создаем изображение
-    $size = 32;
-    $image = imagecreatetruecolor($size, $size);
-    
-    // Делаем фон прозрачным
-    imagealphablending($image, false);
-    imagesavealpha($image, true);
-    $transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
-    imagefilledrectangle($image, 0, 0, $size, $size, $transparent);
-    
-    // Выбираем тип пиксельной иконки (1-сердечко, 2-грудь, 3-звезда)
-    $iconType = mt_rand(1, 3);
-    
-    // Генерируем цвета для значка
-    $mainColor = imagecolorallocate($image, mt_rand(100, 255), mt_rand(50, 150), mt_rand(50, 200));
-    $secondaryColor = imagecolorallocate($image, mt_rand(50, 200), mt_rand(100, 255), mt_rand(50, 150));
-    
-    // Создаем пиксельную картинку в зависимости от выбранного типа
-    switch ($iconType) {
-        case 1: // Сердечко
-            $pixelArt = [
-                [0,0,1,1,1,1,0,0],
-                [0,1,2,2,2,2,1,0],
-                [1,2,2,2,2,2,2,1],
-                [1,2,2,2,2,2,2,1],
-                [0,1,2,2,2,2,1,0],
-                [0,0,1,2,2,1,0,0],
-                [0,0,0,1,1,0,0,0],
-                [0,0,0,0,0,0,0,0]
-            ];
-            break;
-            
-        case 2: // Стилизованная "грудь"
-            $pixelArt = [
-                [0,0,0,0,0,0,0,0],
-                [0,0,1,1,1,1,0,0],
-                [0,1,2,2,2,2,1,0],
-                [0,1,2,1,1,2,1,0],
-                [0,1,2,2,2,2,1,0],
-                [0,1,2,2,2,2,1,0],
-                [0,0,1,1,1,1,0,0],
-                [0,0,0,0,0,0,0,0]
-            ];
-            break;
-            
-        case 3: // Звезда
-            $pixelArt = [
-                [0,0,0,1,1,0,0,0],
-                [0,0,0,1,1,0,0,0],
-                [0,0,1,2,2,1,0,0],
-                [1,1,2,2,2,2,1,1],
-                [1,2,2,2,2,2,2,1],
-                [0,1,2,2,2,2,1,0],
-                [0,0,1,1,1,1,0,0],
-                [0,0,0,1,1,0,0,0]
-            ];
-            break;
-    }
-    
-    // Рисуем пиксельную картинку
-    $pixelSize = 4; // Размер пикселя
-    for ($y = 0; $y < 8; $y++) {
-        for ($x = 0; $x < 8; $x++) {
-            if ($pixelArt[$y][$x] == 1) {
-                imagefilledrectangle(
-                    $image,
-                    $x * $pixelSize, $y * $pixelSize,
-                    ($x + 1) * $pixelSize - 1, ($y + 1) * $pixelSize - 1,
-                    $mainColor
-                );
-            } elseif ($pixelArt[$y][$x] == 2) {
-                imagefilledrectangle(
-                    $image,
-                    $x * $pixelSize, $y * $pixelSize,
-                    ($x + 1) * $pixelSize - 1, ($y + 1) * $pixelSize - 1,
-                    $secondaryColor
-                );
-            }
-        }
-    }
-    
-    // Сохраняем фавиконку в формате PNG
-    $faviconPath = $faviconDir . '/favicon.png';
-    imagepng($image, $faviconPath);
-    
-    // Также сохраняем в формате ICO для совместимости
-    $icoPath = $faviconDir . '/favicon.ico';
-    imagepng($image, $icoPath);
-    
-    // Освобождаем память
-    imagedestroy($image);
-    
-    return $faviconPath;
-}
-
-/**
- * Генерация логотипа
+ * Генерация логотипа с поддержкой кириллицы
  * @param string $siteName Название сайта
  * @return string Путь к логотипу
  */
@@ -3237,9 +3130,11 @@ function generate_logo($siteName) {
     // Находим подходящий шрифт, поддерживающий кириллицу
     $fontFile = null;
     $fontPaths = [
-        // Общие пути к шрифтам
+        // Общие пути к шрифтам с поддержкой кириллицы
         __DIR__ . '/assets/fonts/DejaVuSans.ttf',
         __DIR__ . '/assets/fonts/arial.ttf',
+        __DIR__ . '/assets/fonts/opensans.ttf',
+        __DIR__ . '/assets/fonts/roboto.ttf',
         // Linux пути
         '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
         '/usr/share/fonts/truetype/freefont/FreeSans.ttf',
@@ -3259,6 +3154,8 @@ function generate_logo($siteName) {
             break;
         }
     }
+    
+    // Если нужно, можно добавить здесь встроенный шрифт на случай, если ни один из путей не найден
     
     if ($fontFile && function_exists('imagettftext')) {
         // Рассчитываем размер шрифта в зависимости от длины названия сайта
@@ -3322,37 +3219,24 @@ function generate_logo($siteName) {
                 break;
         }
     } else {
-        // Если не удалось найти подходящий шрифт, используем встроенный
-        $fontSize = 5; // Максимальный размер для imagestring
+        // Если не удалось найти подходящий шрифт для кириллицы, 
+        // лучше сгенерировать простой текстовый логотип без кириллицы, чем неправильно отображать
         
-        // Получаем ширину текста (приблизительно)
-        $textWidth = imagefontwidth($fontSize) * mb_strlen($siteName);
+        // Рисуем простой прямоугольник с контрастным цветом
+        $rectangleColor = imagecolorallocate($image, mt_rand(0, 100), mt_rand(50, 150), mt_rand(100, 255));
+        imagefilledrectangle($image, 0, 0, $width, $height, $rectangleColor);
         
-        // Центрируем текст
-        $x = ($width - $textWidth) / 2;
-        $y = ($height - imagefontheight($fontSize)) / 2;
+        // Добавляем первую букву (на латинице) или логотип
+        $letter = mb_substr($siteName, 0, 1);
+        $letter = preg_match('/[a-zA-Z0-9]/u', $letter) ? $letter : 'GL'; // GL = GlakTube
         
-        // Транслитерация для совместимости со встроенными шрифтами
-        $translit = [
-            'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ё' => 'e', 
-            'ж' => 'zh', 'з' => 'z', 'и' => 'i', 'й' => 'y', 'к' => 'k', 'л' => 'l', 'м' => 'm', 
-            'н' => 'n', 'о' => 'o', 'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u', 
-            'ф' => 'f', 'х' => 'h', 'ц' => 'ts', 'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sch', 'ъ' => '', 
-            'ы' => 'y', 'ь' => '', 'э' => 'e', 'ю' => 'yu', 'я' => 'ya',
-            'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D', 'Е' => 'E', 'Ё' => 'E', 
-            'Ж' => 'ZH', 'З' => 'Z', 'И' => 'I', 'Й' => 'Y', 'К' => 'K', 'Л' => 'L', 'М' => 'M', 
-            'Н' => 'N', 'О' => 'O', 'П' => 'P', 'Р' => 'R', 'С' => 'S', 'Т' => 'T', 'У' => 'U', 
-            'Ф' => 'F', 'Х' => 'H', 'Ц' => 'TS', 'Ч' => 'CH', 'Ш' => 'SH', 'Щ' => 'SCH', 'Ъ' => '', 
-            'Ы' => 'Y', 'Ь' => '', 'Э' => 'E', 'Ю' => 'YU', 'Я' => 'YA'
-        ];
+        // Выводим текст (только латиница)
+        $fontSize = 20;
+        $textWidth = strlen($letter) * 20;
+        $x = ($width - $textWidth) / 2 + 10;
+        $y = ($height / 2) + 5;
         
-        $translitName = $siteName;
-        foreach ($translit as $cyr => $lat) {
-            $translitName = str_replace($cyr, $lat, $translitName);
-        }
-        
-        // Выводим текст
-        imagestring($image, $fontSize, $x, $y, $translitName, $textColor);
+        imagestring($image, 5, $x, $y, $letter, $textColor);
     }
     
     // Сохраняем логотип в формате PNG с прозрачностью
@@ -3363,6 +3247,129 @@ function generate_logo($siteName) {
     imagedestroy($image);
     
     return $logoPath;
+}
+
+/**
+ * Генерация фавиконки в виде осмысленной картинки
+ * @param string $siteName Название сайта
+ * @return string Путь к фавиконке
+ */
+function generate_favicon($siteName) {
+    $faviconDir = getConfig('paths.root') . '/favicon';
+    
+    if (!is_dir($faviconDir)) {
+        mkdir($faviconDir, 0755, true);
+    }
+    
+    // Создаем изображение
+    $size = 32;
+    $image = imagecreatetruecolor($size, $size);
+    
+    // Делаем фон прозрачным
+    imagealphablending($image, false);
+    imagesavealpha($image, true);
+    $transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
+    imagefilledrectangle($image, 0, 0, $size, $size, $transparent);
+    
+    // Включаем альфа-канал для рисования
+    imagealphablending($image, true);
+    
+    // Выбираем тип пиксельной иконки (1-сердечко, 2-попа, 3-звезда)
+    $iconType = mt_rand(1, 3);
+    
+    // Генерируем цвета для значка
+    $mainColor = imagecolorallocate($image, mt_rand(100, 255), mt_rand(50, 150), mt_rand(50, 200));
+    $secondaryColor = imagecolorallocate($image, mt_rand(50, 200), mt_rand(100, 255), mt_rand(50, 150));
+    $outlineColor = imagecolorallocate($image, 30, 30, 30);
+    
+    // Создаем пиксельную картинку в зависимости от выбранного типа
+    switch ($iconType) {
+        case 1: // Сердечко
+            // Фон
+            imagefilledrectangle($image, 0, 0, $size-1, $size-1, $secondaryColor);
+            
+            // Создаем форму сердца
+            $heart = [
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 1, 1, 0, 0, 1, 1, 0],
+                [1, 2, 2, 1, 1, 2, 2, 1],
+                [1, 2, 2, 2, 2, 2, 2, 1],
+                [1, 2, 2, 2, 2, 2, 2, 1],
+                [0, 1, 2, 2, 2, 2, 1, 0],
+                [0, 0, 1, 2, 2, 1, 0, 0],
+                [0, 0, 0, 1, 1, 0, 0, 0]
+            ];
+            break;
+            
+        case 2: // Попа/ножки
+            // Фон
+            imagefilledrectangle($image, 0, 0, $size-1, $size-1, $secondaryColor);
+            
+            // Создаем форму
+            $heart = [
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 1, 1, 0, 0],
+                [0, 1, 2, 2, 2, 2, 1, 0],
+                [0, 1, 2, 1, 1, 2, 1, 0],
+                [0, 1, 2, 2, 2, 2, 1, 0],
+                [0, 1, 2, 2, 2, 2, 1, 0],
+                [0, 0, 1, 1, 1, 1, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0]
+            ];
+            break;
+            
+        case 3: // Звезда
+            // Фон
+            imagefilledrectangle($image, 0, 0, $size-1, $size-1, $secondaryColor);
+            
+            // Создаем форму звезды
+            $heart = [
+                [0, 0, 0, 1, 1, 0, 0, 0],
+                [0, 0, 1, 2, 2, 1, 0, 0],
+                [0, 1, 2, 2, 2, 2, 1, 0],
+                [1, 2, 2, 2, 2, 2, 2, 1],
+                [1, 2, 2, 2, 2, 2, 2, 1],
+                [0, 1, 2, 2, 2, 2, 1, 0],
+                [0, 0, 1, 1, 1, 1, 0, 0],
+                [0, 0, 0, 1, 1, 0, 0, 0]
+            ];
+            break;
+    }
+    
+    // Рисуем пиксельную картинку
+    $pixelSize = 4; // Размер пикселя
+    for ($y = 0; $y < 8; $y++) {
+        for ($x = 0; $x < 8; $x++) {
+            if ($heart[$y][$x] == 1) {
+                imagefilledrectangle(
+                    $image,
+                    $x * $pixelSize, $y * $pixelSize,
+                    ($x + 1) * $pixelSize - 1, ($y + 1) * $pixelSize - 1,
+                    $outlineColor
+                );
+            } elseif ($heart[$y][$x] == 2) {
+                imagefilledrectangle(
+                    $image,
+                    $x * $pixelSize, $y * $pixelSize,
+                    ($x + 1) * $pixelSize - 1, ($y + 1) * $pixelSize - 1,
+                    $mainColor
+                );
+            }
+        }
+    }
+    
+    // Сохраняем фавиконку в формате PNG
+    $faviconPath = $faviconDir . '/favicon.png';
+    imagepng($image, $faviconPath);
+    
+    // Также сохраняем в формате ICO для совместимости
+    $icoPath = $faviconDir . '/favicon.ico';
+    imagepng($image, $icoPath);
+    
+    // Освобождаем память
+    imagedestroy($image);
+    
+    return $faviconPath;
 }
 
 /**
